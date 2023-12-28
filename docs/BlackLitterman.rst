@@ -4,19 +4,30 @@
 Black-Litterman Allocation
 ##########################
 
-The Black-Litterman (BL) model [1]_ takes a Bayesian approach to asset allocation.
-Specifically, it combines a **prior** estimate of returns (for example, the market-implied
-returns) with **views** on certain assets, to produce a **posterior** estimate of expected
-returns. The advantages of this are:
+- The Black-Litterman (BL) model [1]_ 
+    - takes a Bayesian approach to asset allocation.
+- Specifically, 
+    - it combines a **prior** estimate of returns 
+        - (for example, the market-implied returns) with **views** on certain assets, 
+    - to produce a **posterior** estimate of expected returns. 
+    
 
-- You can provide views on only a subset of assets and BL will meaningfully propagate it, 
-  taking into account the covariance with other assets.
-- You can provide *confidence* in your views.
-- Using Black-Litterman posterior returns results in much more stable portfolios than
-  using mean-historical return. 
+- The advantages of this are:
+    - You can provide views on only a subset of assets 
+        - and BL will meaningfully propagate it, 
+        - taking into account the covariance with other assets.
 
-Essentially, Black-Litterman treats the vector of expected returns itself as a quantity to
-be estimated. The Black-Litterman formula is given below:
+    - You can provide *confidence* in your views - This is a powerful feature, 
+        - Express the strength of your views, 
+        - Model will adjust the posterior accordingly. 
+    - This is particularly useful if you have a proprietary model that generates views.
+
+    - Using Black-Litterman posterior returns 
+        - results in much more stable portfolios than using mean-historical return. 
+
+- Essentially, Black-Litterman treats the vector of expected returns itself as a quantity to be estimated. 
+
+- The Black-Litterman formula is given below:
 
 .. math:: 
 

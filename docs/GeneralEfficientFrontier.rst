@@ -4,31 +4,52 @@
 General Efficient Frontier
 ##########################
 
-The mean-variance optimization methods described previously can be used whenever you have a vector
-of expected returns and a covariance matrix. The objective and constraints will be some combination
-of the portfolio return and portfolio volatility. 
+- The mean-variance optimization methods described previously can be used whenever you have 
+    - a vector of expected returns 
+    - and a covariance matrix. 
 
-However, you may want to construct the efficient frontier for an entirely different type of risk model
-(one that doesn't depend on covariance matrices), or optimize an objective unrelated to portfolio
-return (e.g tracking error). PyPortfolioOpt comes with several popular alternatives and provides support
-for custom optimization problems.
+- The objective and constraints will be some combination of 
+    - the portfolio return 
+    - and portfolio volatility. 
+
+- However, you may want to construct the efficient frontier 
+    - for an entirely different type of risk model
+    - (one that doesn't depend on covariance matrices), 
+    - or optimize an objective unrelated to portfolio return (e.g tracking error). 
+
+- PyPortfolioOpt comes with 
+    - several popular alternatives and 
+    - provides support for custom optimization problems.
+
+
+
+
 
 Efficient Semivariance
 ======================
 
-Instead of penalising volatility, mean-semivariance optimization seeks to only penalise
-downside volatility, since upside volatility may be desirable. 
+- Instead of penalising volatility, 
+    - mean-semivariance optimization seeks to 
+    - only penalise downside volatility, 
+    - since upside volatility may be desirable. 
 
-There are two approaches to the mean-semivariance optimization problem. The first is to use a
-heuristic (i.e "quick and dirty") solution: pretending that the semicovariance matrix
-(implemented in :py:mod:`risk_models`) is a typical covariance matrix and doing standard
-mean-variance optimization. It can be shown that this *does not* yield a portfolio that
-is efficient in mean-semivariance space (though it might be a good-enough approximation).
+- There are two approaches to the mean-semivariance optimization problem. 
+    - The first is to use a heuristic (i.e "quick and dirty") solution: 
+        - pretending that the semicovariance matrix (implemented in :py:mod:`risk_models`) 
+        - is a typical covariance matrix and doing standard mean-variance optimization. 
 
-Fortunately, it is possible to write mean-semivariance optimization as a convex problem
-(albeit one with many variables), that can be solved to give an "exact" solution.
-For example, to maximise return for a target semivariance
-:math:`s^*` (long-only), we would solve the following problem:
+    - It can be shown that this *does not* yield a portfolio that
+        - is efficient in mean-semivariance space 
+        - (though it might be a good-enough approximation).
+
+- Fortunately, it is possible to write 
+    - mean-semivariance optimization as a convex problem
+        - (albeit one with many variables), 
+    - that can be solved to give an "exact" solution.
+        - For example, to maximise return for a target semivariance
+            - :math:`s^*` (long-only), 
+
+- we would solve the following problem:
 
 .. math::
 
@@ -95,20 +116,25 @@ implementation is based on Markowitz et al (2019) [2]_.
     :members:
     :exclude-members: max_sharpe, min_volatility
 
+
+
+
 Efficient CVaR
 ==============
 
-The **conditional value-at-risk** (a.k.a **expected shortfall**) is a popular measure of tail risk. The CVaR can be
-thought of as the average of losses that occur on "very bad days", where "very bad" is quantified by the parameter
-:math:`\beta`.
+- The **conditional value-at-risk** (a.k.a **expected shortfall**) is a popular measure of tail risk. 
+- The CVaR can be thought of as the average of losses that occur on "very bad days", 
+    - where "very bad" is quantified by the parameter :math:`\beta`.
 
-For example, if we calculate the CVaR to be 10% for :math:`\beta = 0.95`, we can be 95% confident that the worst-case
-average daily loss will be 3%. Put differently, the CVaR is the average of all losses so severe that they only occur
-:math:`(1-\beta)\%` of the time. 
+- For example, if we calculate the CVaR to be 10% for :math:`\beta = 0.95`, 
+    - we can be 95% confident that the worst-case average daily loss will be 3%. 
+- Put differently, the CVaR is the average of all losses so severe that they only occur
+    - :math:`(1-\beta)\%` of the time. 
 
-While CVaR is quite an intuitive concept, a lot of new notation is required to formulate it mathematically (see
-the `wiki page <https://en.wikipedia.org/wiki/Expected_shortfall>`_ for more details). We will adopt the following
-notation: 
+- While CVaR is quite an intuitive concept, 
+    - a lot of new notation is required to formulate it mathematically 
+    - (see the `wiki page <https://en.wikipedia.org/wiki/Expected_shortfall>`_ for more details). 
+- We will adopt the following notation: 
 
 - *w* for the vector of portfolio weights
 - *r* for a vector of asset returns (daily), with probability distribution :math:`p(r)`.
@@ -194,14 +220,19 @@ I am grateful to `Nicolas Knudde <https://github.com/nknudde>`_ for implementing
 Custom optimization problems
 ============================
 
-We have seen previously that it is easy to add constraints to ``EfficientFrontier`` objects (and
-by extension, other general efficient frontier objects like ``EfficientSemivariance``). However, what if you aren't interested
-in anything related to ``max_sharpe()``, ``min_volatility()``, ``efficient_risk()`` etc and want to
-set up a completely new problem to optimize for some custom objective?
+- We have seen previously that it is easy to add constraints to ``EfficientFrontier`` objects 
+    - (and by extension, other general efficient frontier objects like ``EfficientSemivariance``). 
 
-For example, perhaps our objective is to construct a basket of assets that best replicates a
-particular index, in other words, to minimise the **tracking error**. This does not fit within
-a mean-variance optimization paradigm, but we can still implement it in PyPortfolioOpt::
+- However, what if you aren't interested in anything related to 
+    - ``max_sharpe()``, ``min_volatility()``, ``efficient_risk()`` etc 
+    - and want to set up a completely new problem to optimize for some custom objective?
+
+- For example, perhaps our objective is to construct 
+    - a basket of assets that best replicates a particular index, 
+- in other words, 
+    - to minimise the **tracking error**. 
+    - This does not fit within a mean-variance optimization paradigm, 
+    - but we can still implement it in PyPortfolioOpt::
 
     from pypfopt.base_optimizer import BaseConvexOptimizer
     from pypfopt.objective_functions import ex_post_tracking_error
@@ -221,9 +252,13 @@ a mean-variance optimization paradigm, but we can still implement it in PyPortfo
     ) 
     weights = opt.clean_weights()
 
-The ``EfficientFrontier`` class inherits from ``BaseConvexOptimizer``. It may be more convenient
-to call ``convex_objective`` from an ``EfficientFrontier`` instance than from ``BaseConvexOptimizer``,
-particularly if your objective depends on the mean returns or covariance matrix. 
+
+- The ``EfficientFrontier`` class inherits from ``BaseConvexOptimizer``. 
+- It may be more convenient 
+    - to call ``convex_objective`` 
+    - from an ``EfficientFrontier`` instance 
+    - than from ``BaseConvexOptimizer``,
+- particularly if your objective depends on the mean returns or covariance matrix. 
 
 You can either optimize some generic ``convex_objective``
 (which *must* be built using ``cvxpy`` atomic functions -- see `here <https://www.cvxpy.org/tutorial/functions/index.html>`_)
